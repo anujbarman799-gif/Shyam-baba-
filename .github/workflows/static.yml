@@ -63,3 +63,54 @@ jobs:
   <script src="script.js"></script>
 </body>
 </html>
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8">
+  <title>पानीपुरी ऑफर 🎉</title>
+</head>
+<body>
+  <h1>🥳 Free Pani Puri Offer</h1>
+  <p>पहले 50 कस्टमर को ₹50 की पानीपुरी बिल्कुल FREE!</p>
+
+  <label>अपना नाम लिखें:</label>
+  <input type="text" id="nameInput">
+  <button onclick="addCustomer()">रैंक देखो</button>
+
+  <div id="result" style="margin-top:20px; font-size:18px;"></div>
+
+  <script>
+    // Local Storage में customers की list रखेंगे
+    let customers = JSON.parse(localStorage.getItem("customers")) || [];
+
+    function addCustomer() {
+      let name = document.getElementById("nameInput").value.trim();
+      if (!name) {
+        alert("कृपया नाम डालें!");
+        return;
+      }
+
+      // चेक करो नाम पहले से है या नहीं
+      let index = customers.indexOf(name);
+      let rank;
+
+      if (index === -1) {
+        customers.push(name);
+        localStorage.setItem("customers", JSON.stringify(customers));
+        rank = customers.length;
+      } else {
+        rank = index + 1;
+      }
+
+      let msg = `नमस्ते ${name}, आप #${rank} ग्राहक हो।`;
+
+      if (rank <= 50) {
+        msg += " 🎉 बधाई! आपको FREE पानीपुरी मिलेगी।";
+      } else {
+        msg += " ❌ माफ़ कीजिए, ऑफर सिर्फ पहले 50 ग्राहकों के लिए था।";
+      }
+      document.getElementById("result").innerHTML = msg;
+    }
+  </script>
+</body>
+</html>
