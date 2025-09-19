@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>PaniPuriFast — Apka Pani Puri Corner</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:Inter,system-ui,Arial,sans-serif;background:#f6f6f8;color:#222}
+  .topbar{background:#fff;padding:12px 16px;border-bottom:1px solid #eaeaea;display:flex;align-items:center;gap:12px;position:sticky;top:0;z-index:10}
+  .brand{color:#ff4d00;font-weight:800;font-size:20px;display:flex;align-items:center;gap:8px}
+  .brand .dot{width:12px;height:12px;border-radius:50%;background:#ff4d00;display:inline-block}
+  .search{flex:1;display:flex;gap:8px;align-items:center;background:#f2f2f6;padding:8px;border-radius:10px;border:1px solid #eee}
+  .search input{flex:1;border:0;background:transparent;outline:none;padding:6px;font-size:15px}
+  .btn{background:#ff4d00;color:#fff;padding:8px 12px;border-radius:8px;border:0;cursor:pointer}
+  .container{max-width:1200px;margin:18px auto;padding:0 16px}
+  .hero{display:flex;gap:18px;align-items:center;margin-bottom:16px}
+  .hero .left{flex:1}
+  .hero h1{font-size:24px;margin-bottom:6px}
+  .hero p{color:#555;margin-bottom:6px;font-size:16px}
+  .hero .loc{display:flex;gap:8px;margin-top:12px}
+  .cats{display:flex;gap:12px;overflow:auto;padding:8px 0 18px}
+  .cat{min-width:110px;background:#fff;padding:10px;border-radius:10px;border:1px solid #eee;text-align:center}
+  .cat img{width:64px;height:64px;border-radius:8px;object-fit:cover;margin-bottom:8px}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px}
+  .card{background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 6px 18px rgba(20,20,50,0.03);border:1px solid #f0f0f3}
+  .card img{width:100%;height:160px;object-fit:cover}
+  .meta{padding:12px}
+  .meta h3{font-size:16px;margin-bottom:6px}
+  .meta p{font-size:13px;color:#666;margin-bottom:8px}
+  .meta .row{display:flex;justify-content:space-between;align-items:center}
+  .small{font-size:13px;color:#777}
+  .modal-back{position:fixed;inset:0;background:rgba(0,0,0,0.45);display:none;align-items:center;justify-content:center;padding:16px}
+  .modal{background:#fff;padding:18px;border-radius:10px;max-width:420px;width:100%}
+  .modal h2{margin-bottom:8px}
+  .modal .success{background:#f0fff4;color:#065f46;padding:10px;border-radius:8px;margin-top:8px}
+  footer{max-width:1200px;margin:20px auto;padding:12px 16px;color:#666;font-size:14px}
+  @media(max-width:700px){ .hero{flex-direction:column} }
+</style>
+</head>
+<body>
+
+<!-- Topbar -->
+<header class="topbar">
+  <div class="brand"><span class="dot"></span>PaniPuriFast</div>
+  <div class="search">
+    <input id="globalSearch" placeholder="Search: पानिपुरी, चाट, पास के stalls..." />
+    <button class="btn" onclick="openRankModal()">Get My Rank</button>
+  </div>
+</header>
+
+<div class="container">
+  <!-- Hero -->
+  <section class="hero">
+    <div class="left">
+      <h1>जय श्री श्याम 🙏</h1>
+      <p>🍴 Namaste Foodys</p>
+      <p>💛 Man Laga Kar Khao</p>
+
+      <div class="loc">
+        <input id="locInput" placeholder="अपना पिनकोड/लोकेशन डालें" style="padding:10px;border-radius:8px;border:1px solid #eaeaea;width:60%">
+        <button class="btn" onclick="setLocation()">Locate</button>
+      </div>
+    </div>
+
+    <div class="right" style="width:360px">
+      <div style="background:#fff;padding:12px;border-radius:12px;border:1px solid #eee">
+        <h3 style="margin-bottom:6px">आज का ऑफर 🎉</h3>
+        <div style="font-size:14px;color:#666">पहले 50 ग्राहक ₹50 की पानिपुरी FREE पाएंगे!</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- बाकी सब पहले जैसा ही रहेगा -->
+  <div class="cats" id="cats"></div>
+  <main class="grid" id="grid"></main>
+</div>
+
+<!-- Rank Modal -->
+<div class="modal-back" id="modal">
+  <div class="modal">
+    <h2>अपना नाम डालें — रैंक पायें</h2>
+    <input id="rankName" placeholder="अपना नाम" style="width:100%;padding:10px;border-radius:8px;border:1px solid #eaeaea">
+    <div style="display:flex;gap:8px;margin-top:10px">
+      <button class="btn" onclick="submitRank()">मेरा रैंक दिखाओ</button>
+      <button onclick="closeModal()" style="padding:10px;border-radius:8px;border:1px solid #ddd;background:#fff;cursor:pointer">Cancel</button>
+    </div>
+    <div id="rankResult" style="margin-top:12px"></div>
+  </div>
+</div>
+
+<footer>
+  © 2025 PaniPuriFast — Demo site with rank system.
+</footer>
+
+<script>
+/* Sample categories & stalls */
+const categories=[{title:'पानिपुरी',img:'https://picsum.photos/seed/pani/100/100'},{title:'चाट',img:'https://picsum.photos/seed/chaat/100/100'}];
+const stalls=[{name:'पानीपुरी एक्सप्रेस',desc:'हॉट & मसालेदार पानिपुरी',price:'₹50',img:'https://picsum.photos/seed/r1/600/400'},{name:'चाट चटकारा',desc:'क्लासिक चाट',price:'₹70',img:'https://picsum.photos/seed/r2/600/400'}];
+
+const catsEl=document.getElementById('cats'),gridEl=document.getElementById('grid');
+categories.forEach(c=>{const d=document.createElement('div');d.className='cat';d.innerHTML=`<img src="${c.img}" alt=""><div>${c.title}</div>`;catsEl.appendChild(d);});
+function renderGrid(list){gridEl.innerHTML='';list.forEach(s=>{const el=document.createElement('article');el.className='card';el.innerHTML=`<img src="${s.img}"><div class="meta"><h3>${s.name}</h3><p>${s.desc}</p><div class="row"><div class="small">⭐ 4.${Math.floor(Math.random()*5)}</div><div>${s.price}</div></div></div>`;gridEl.appendChild(el);});}
+renderGrid(stalls);
+
+document.getElementById('globalSearch').addEventListener('input',function(){const q=this.value.trim().toLowerCase();renderGrid(stalls.filter(s=>(s.name+s.desc).toLowerCase().includes(q)));});
+
+/* Rank system with localStorage demo */
+const modal=document.getElementById('modal');
+function openRankModal(){modal.style.display='flex';document.getElementById('rankResult').innerHTML='';}
+function closeModal(){modal.style.display='none';}
+function setLocation(){alert('Location set (demo).');}
+function submitRank(){
+  const name=document.getElementById('rankName').value.trim();
+  if(!name){alert('कृपया नाम डालें');return;}
+  let arr=JSON.parse(localStorage.getItem('pani_customers')||'[]');
+  let idx=arr.indexOf(name);let rank;
+  if(idx===-1){arr.push(name);localStorage.setItem('pani_customers',JSON.stringify(arr));rank=arr.length;}else{rank=idx+1;}
+  let msg=`नमस्ते ${name}, आपका रैंक #${rank} है।`;
+  if(rank<=50){msg+=` 🎉 आपको FREE पानिपुरी मिलेगी!`;}else{msg+=` ❌ ऑफर पहले 50 ग्राहकों तक था।`;}
+  document.getElementById('rankResult').innerHTML=msg;
+}
+</script>
+</body>
+</html>
