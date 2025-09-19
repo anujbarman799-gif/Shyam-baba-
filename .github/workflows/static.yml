@@ -41,8 +41,8 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
-<!DOCTYPE html>
-<html lang="hi">
+<! welcome>
+<html lang="Namaste">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
