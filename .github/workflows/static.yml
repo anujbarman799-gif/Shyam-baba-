@@ -41,3 +41,25 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>पानीपुरी ऑफर 🎉</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main>
+    <h1>🥳 Free Pani Puri Offer</h1>
+    <p>पहले 50 कस्टमर्स को ₹50 की पानीपुरी बिलकुल FREE!</p>
+
+    <input type="text" id="nameInput" placeholder="अपना नाम लिखें">
+    <button id="submitBtn">रैंक देखो</button>
+
+    <div id="result"></div>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
